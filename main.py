@@ -1,4 +1,4 @@
-from kivymd.app import MDApp
+from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
@@ -7,7 +7,7 @@ from openpyxl import load_workbook
 import re
 
 
-class AplicativoPersiana(MDApp):
+class AplicativoPersiana(App):
     def build(self):
         self.layout = BoxLayout(orientation='vertical', padding=20, spacing=15)
         
