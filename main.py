@@ -335,13 +335,14 @@ class AplicativoPersiana(App):
         content.add_widget(save_button2)
         save_button3 = Button(text="Sair", on_press=self.sair)
         content.add_widget(save_button3)
-            
-        self.resultado_label_popup.text += f"Total Preço à Vista Acessórios: R${self.total_vista_acessorios:.2f}\n"
-        self.resultado_label_popup.text += f"Total Preço a Prazo Acessórios: R${self.total_prazo_acessorios:.2f}\n"
+        try:    
+            self.resultado_label_popup.text += f"Total Preço à Vista Acessórios: R${self.total_vista_acessorios:.2f}\n"
+            self.resultado_label_popup.text += f"Total Preço a Prazo Acessórios: R${self.total_prazo_acessorios:.2f}\n"
 
-        self.popup = Popup(title="Inserir Acessórios", content=content, size_hint=(None, None), size=(600, 600))
-        self.popup.open()
-
+            self.popup = Popup(title="Inserir Acessórios", content=content, size_hint=(None, None), size=(600, 600))
+            self.popup.open()
+        except AttributeError:
+            return
     def mostrar_acessorios(self, instance):
         planilha_acess = load_workbook("C:/Users/Pedro/OneDrive/Área de Trabalho/programas python/programa kivy/Acess Rolo.xlsx")  # Substitua pelo caminho correto
         ws_rolo_acess = planilha_acess["Table 2"]
@@ -350,29 +351,30 @@ class AplicativoPersiana(App):
         acessorios_digitados = self.acessorios_input.text
         encontrados = False
         resultados = []
-    
-        for row in ws_rolo_acess.iter_rows(min_row=1, values_only=True, min_col=0, max_col=6, max_row=28):  # Substitua o número de linhas máximo conforme necessário
-            acess = row[0]
-            preco_vista = row[2]
-            preco_prazo = row[4]
-            if acessorios_digitados in str(acess):
-                encontrados = True
-                resultado = f"Acessório: {acess}\n"
-                if preco_vista is not None:
-                    resultado += f"A vista: R${preco_vista:.2f}\n"
-                if preco_prazo is not None:
-                    resultado += f"A prazo: R${preco_prazo:.2f}\n"
-                    
-                    resultados.append(resultado)
+        if acessorios_digitados:
+                for row in ws_rolo_acess.iter_rows(min_row=1, values_only=True, min_col=0, max_col=6, max_row=28):  # Substitua o número de linhas máximo conforme necessário
+                    acess = row[0]
+                    preco_vista = row[2]
+                    preco_prazo = row[4]
+                    if acessorios_digitados in str(acess):
+                        encontrados = True
+                        resultado = f"Acessório: {acess}\n"
+                        if preco_vista is not None:
+                            resultado += f"A vista: R${preco_vista:.2f}\n"
+                        if preco_prazo is not None:
+                            resultado += f"A prazo: R${preco_prazo:.2f}\n"
+                            
+                            resultados.append(resultado)
 
-                self.preco_vista_acessorio = preco_vista if preco_vista is not None else 0.0
-                self.preco_prazo_acessorio = preco_prazo if preco_prazo is not None else 0.0
-                
+                        self.preco_vista_acessorio = preco_vista if preco_vista is not None else 0.0
+                        self.preco_prazo_acessorio = preco_prazo if preco_prazo is not None else 0.0
+        else:
+            return
+               
         if encontrados:
             self.resultado_label_popup.text = "\n".join(resultados)
             
-        else:
-            self.resultado_label_popup.text = "Nenhum acessório encontrado."
+        
 
         for row in ws_rolo_acess_vertical.iter_rows(min_row=18, values_only=True, min_col=0, max_col=6, max_row=39):  # Substitua o número de linhas máximo conforme necessário
             acess = row[0]
@@ -427,3 +429,4 @@ class AplicativoPersiana(App):
 if __name__ == '__main__':
     AplicativoPersiana().run()
    
+
